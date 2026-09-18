@@ -329,10 +329,15 @@
   var panels = Array.prototype.slice.call(doc.querySelectorAll(".panel"));
   var tabs = Array.prototype.slice.call(doc.querySelectorAll(".tabs a[data-tab]"));
   var ids = panels.map(function (p) { return p.id; });
+  var current = "";
 
   function open(id) {
     var found = ids.indexOf(id) !== -1;
-    panels.forEach(function (p) { p.hidden = p.id !== id; });
+    panels.forEach(function (p) {
+      p.hidden = p.id !== id;
+      /* 닫힌 패널에는 임시 tabindex를 남기지 않는다 */
+      if (p.hidden) p.removeAttribute("tabindex");
+    });
     tabs.forEach(function (t) {
       if (t.getAttribute("data-tab") === id) t.setAttribute("aria-current", "page");
       else t.removeAttribute("aria-current");
@@ -349,24 +354,40 @@
       panel.focus({ preventScroll: true });
       window.scrollTo(0, 0);
     }
+    current = found ? id : "";
+  }
+
+  /* 패널을 닫을 때는 열었던 탭으로 초점을 돌려준다.
+     그냥 닫으면 숨겨진 패널에 있던 초점이 body로 떨어져 탭 순서 맨 앞으로 밀린다. */
+  function close() {
+    var prev = current;
+    if (location.hash) history.pushState("", doc.title, location.pathname + location.search);
+    open("");
+    var back = (prev && doc.querySelector('.tabs a[data-tab="' + prev + '"]')) ||
+               doc.querySelector(".home-link");
+    if (back) back.focus();
   }
 
   function route() {
     open(location.hash.replace("#", ""));
   }
 
+  /* 해시로 바로 들어오면 브라우저가 나중에(이미지·웹폰트가 자리를 잡은 뒤) 그 섹션으로
+     한 번 더 스크롤한다. 헤더는 sticky라 사라지지 않지만, 시작 위치는 맨 위로 되돌린다. */
+  function pin() { if (doc.body.classList.contains("is-open")) window.scrollTo(0, 0); }
+  window.addEventListener("load", pin);
+  try { if (doc.fonts && doc.fonts.ready && doc.fonts.ready.then) doc.fonts.ready.then(pin); } catch (e) {}
+
   window.addEventListener("hashchange", route);
   doc.querySelectorAll("a[data-home]").forEach(function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      if (location.hash) history.pushState("", doc.title, location.pathname + location.search);
-      open("");
+      close();
     });
   });
   doc.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && doc.body.classList.contains("is-open")) {
-      history.pushState("", doc.title, location.pathname + location.search);
-      open("");
+      close();
     }
   });
   route();
