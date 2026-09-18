@@ -58,8 +58,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--paper); outline
   pointer-events: none;
   transition: opacity .35s ease;
 }
-body.is-open .veil { opacity: .76; }
-body.is-open .bg { opacity: .45; filter: blur(7px); }
+/* 패널을 열어도 웨이퍼는 첫 화면과 똑같이 보이고 계속 움직인다.
+   글자가 뜨는 자리만 아주 옅게 눌러 준다. */
+body.is-open .veil { opacity: .22; }
 
 .stage, .foot { position: relative; z-index: 2; }
 /* 해시(#about …)로 바로 들어오면 브라우저가 그 섹션을 화면 맨 위로 끌어올린다.

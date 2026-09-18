@@ -261,12 +261,7 @@
     return {
       build: build,
       start: start,
-      stop: stop,
-      freeze: function () {
-        stop();
-        flash = 0;
-        still();
-      }
+      stop: stop
     };
   }(doc.getElementById("wafer")));
 
@@ -278,7 +273,7 @@
     function relayout() {
       window.clearTimeout(rt);
       rt = window.setTimeout(function () {
-        if (wafer.build() && !reduce && !doc.body.classList.contains("is-open")) wafer.start();
+        if (wafer.build() && !reduce) wafer.start();
       }, 100);
     }
     if (window.ResizeObserver) new ResizeObserver(relayout).observe(doc.getElementById("wafer"));
@@ -286,7 +281,7 @@
 
     doc.addEventListener("visibilitychange", function () {
       if (doc.hidden) wafer.stop();
-      else if (!doc.body.classList.contains("is-open")) wafer.start();
+      else wafer.start();
     });
   }
 
@@ -344,10 +339,7 @@
     });
     doc.body.classList.toggle("is-open", found);
     doc.title = found ? (doc.getElementById(id + "-title").textContent + " — KYNN TECHNOLOGY") : "KYNN TECHNOLOGY";
-    if (wafer) {
-      if (found) wafer.freeze();
-      else if (!doc.hidden) wafer.start();
-    }
+    if (wafer && !doc.hidden) wafer.start();   // 패널을 열어도 배경은 계속 돈다
     if (found) {
       var panel = doc.getElementById(id);
       panel.setAttribute("tabindex", "-1");
