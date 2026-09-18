@@ -1,42 +1,43 @@
-/* 모바일 메뉴 토글 — 순수 JS, 외부 라이브러리 없음.
-   JS가 없으면 메뉴는 그냥 펼쳐진 채로 보인다(styles.css의 .js 게이트). */
+/* 탭 전환: 주소의 #해시로 패널을 연다. 없으면 워드마크만 보인다. */
 (function () {
-  var nav = document.querySelector(".nav");
-  var btn = document.querySelector(".nav-toggle");
-  if (!nav || !btn) { return; }
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tabs a[data-tab]"));
+  var ids = panels.map(function (p) { return p.id; });
 
-  function isOpen() { return nav.classList.contains("nav-open"); }
-
-  function setOpen(open) {
-    nav.classList.toggle("nav-open", open);
-    btn.setAttribute("aria-expanded", open ? "true" : "false");
-    btn.textContent = open ? "닫기" : "메뉴";
+  function open(id) {
+    var found = ids.indexOf(id) !== -1;
+    panels.forEach(function (p) { p.hidden = p.id !== id; });
+    tabs.forEach(function (t) {
+      if (t.getAttribute("data-tab") === id) t.setAttribute("aria-current", "page");
+      else t.removeAttribute("aria-current");
+    });
+    document.body.classList.toggle("is-open", found);
+    document.title = found ? (document.getElementById(id + "-title").textContent + " — KYNN TECHNOLOGY") : "KYNN TECHNOLOGY";
+    if (found) {
+      var panel = document.getElementById(id);
+      panel.setAttribute("tabindex", "-1");
+      panel.focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    }
   }
 
-  btn.addEventListener("click", function () {
-    setOpen(!isOpen());
-  });
+  function route() {
+    open(location.hash.replace("#", ""));
+  }
 
-  /* 메뉴 항목을 누르면 닫는다 */
-  nav.addEventListener("click", function (e) {
-    if (e.target.closest("a")) { setOpen(false); }
+  window.addEventListener("hashchange", route);
+  document.querySelectorAll("a[data-home]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (location.hash) history.pushState("", document.title, location.pathname + location.search);
+      open("");
+    });
   });
-
-  /* 메뉴 바깥을 누르면 닫는다 */
-  document.addEventListener("click", function (e) {
-    if (isOpen() && !nav.contains(e.target)) { setOpen(false); }
-  });
-
-  /* Esc로 닫고 버튼으로 포커스를 돌려준다 */
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && isOpen()) {
-      setOpen(false);
-      btn.focus();
+    if (e.key === "Escape" && document.body.classList.contains("is-open")) {
+      history.pushState("", document.title, location.pathname + location.search);
+      open("");
     }
   });
-
-  /* 탭으로 마지막 항목을 지나 포커스가 메뉴 밖으로 나가면 닫는다(열린 메뉴가 본문을 가리지 않게) */
-  nav.addEventListener("focusout", function (e) {
-    if (isOpen() && !nav.contains(e.relatedTarget)) { setOpen(false); }
-  });
+  route();
 })();
