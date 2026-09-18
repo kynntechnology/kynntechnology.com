@@ -1,12 +1,17 @@
-/* KYNN TECHNOLOGY — 검은 바탕, 흰 글씨, 가운데 워드마크, 상단 탭 4개.
-   토큰: --ink #0a0a0a(바탕) / --paper #f4f4f2(글자) / --mute #9c9c98(보조) / --line #2a2a2a(선)
+/* KYNN TECHNOLOGY — 「웨이퍼」
+   검은 바탕, 흰 글씨, 가운데 워드마크, 상단 탭 4개.
+   배경은 사진이 아니라 캔버스로 그린 실리콘 웨이퍼(다이 격자)다. 밝기 7% 안팎.
+   토큰: --ink #0a0a0a(바탕) / --paper #f4f4f2(글자) / --mute #9c9c98(보조)
+         --line #2a2a2a(선) / --accent #7fa8cc(강조, 선택된 탭 밑줄 한 곳에만)
    서체: Pretendard Variable 단일. 워드마크는 대문자 + 넓은 자간. 단일 다크 테마(의도적). */
 
 :root {
   --ink: #0a0a0a;
   --paper: #f4f4f2;
   --mute: #9c9c98;
+  --dim: #82827e;
   --line: #2a2a2a;
+  --accent: #7fa8cc;
   --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --gutter: clamp(20px, 4vw, 48px);
 }
@@ -18,18 +23,43 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  background: var(--ink);
+  background: transparent;
   color: var(--paper);
   font-family: var(--font);
   font-size: 17px;
   line-height: 1.75;
   word-break: keep-all;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; text-decoration: none; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--paper); outline-offset: 4px; }
 .panel:focus { outline: none; }
 ::selection { background: var(--paper); color: var(--ink); }
+
+/* 배경: 웨이퍼 캔버스 + 패널 열릴 때 덮는 막 */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: opacity .4s ease, filter .4s ease;
+}
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+body.is-open .veil { opacity: .76; }
+body.is-open .bg { opacity: .45; filter: blur(7px); }
+
+.top, .stage, .foot { position: relative; z-index: 2; }
 
 /* 상단 */
 .top {
@@ -42,14 +72,21 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--paper); outline
 .home-link {
   grid-column: 1;
   justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--mute);
-  visibility: hidden;
+  transition: color .18s;
 }
 .home-link:hover { color: var(--paper); }
-body.is-open .home-link { visibility: visible; }
+.mark { flex: none; overflow: visible; }
+.home-text { opacity: 0; transition: opacity .25s ease; }
+body.is-open .home-text { opacity: 1; }
+html:not(.js) .home-text { opacity: 1; }
+
 .tabs {
   grid-column: 2;
   display: flex;
@@ -65,26 +102,50 @@ body.is-open .home-link { visibility: visible; }
   transition: color .15s;
 }
 .tabs a:hover { color: var(--paper); }
-.tabs a[aria-current="page"] { color: var(--paper); border-bottom-color: var(--paper); }
+.tabs a[aria-current="page"] { color: var(--paper); border-bottom-color: var(--accent); }
 
 /* 무대 */
 .stage {
+  position: relative;
   flex: 1;
   display: grid;
   place-items: center;
   padding: 24px var(--gutter) 48px;
 }
+.hero { text-align: center; }
+body.is-open .hero { display: none; }
 .wordmark {
   margin: 0;
   font-size: clamp(24px, 5.3vw, 84px);
   font-weight: 600;
   letter-spacing: 0.32em;
-  text-indent: 0.32em; /* 자간만큼 시각적 중앙 보정 */
+  text-indent: 0.16em; /* 마지막 글자 뒤 자간의 절반 — 시각적 중앙 보정 */
   text-align: center;
   line-height: 1.1;
   white-space: nowrap;
 }
-body.is-open .wordmark { display: none; }
+/* 글자 조각은 inline 그대로 둔다. inline-block으로 바꾸면 자간·커닝이 달라져
+   워드마크 폭이 통째로 늘어나고 좁은 화면에서 넘친다. 그래서 등장은 불투명도만 움직인다. */
+.tagline {
+  margin: clamp(16px, 2.4vw, 28px) 0 0;
+  font-size: clamp(12px, 1.05vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  margin: 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+body.is-open .hint { display: none; }
+html:not(.js) .hint { display: none; }
 
 /* 패널 */
 .panel {
@@ -108,21 +169,35 @@ body.is-open .wordmark { display: none; }
 }
 .panel p { margin: 0 0 16px; }
 .sign { color: var(--mute); }
-.marks {
+
+/* 하는 일 — 웨이퍼·부품·장비 도해 */
+.panel-work { width: min(100%, 720px); }
+.figs {
   list-style: none;
-  margin: 8px 0 20px;
-  padding: 0;
-  border-top: 1px solid var(--line);
-}
-.marks li {
   display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 12px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: clamp(16px, 3.4vw, 34px);
+  margin: 6px 0 26px;
+  padding: 0;
 }
-.marks strong { font-weight: 600; }
-.marks span { color: var(--mute); }
+.figs li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.figs svg {
+  display: block;
+  width: 100%;
+  max-width: 172px;
+  height: auto;
+  color: #7f8d9d;
+}
+.figs span {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--mute);
+}
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 20px; }
 .btn {
   display: inline-block;
@@ -168,23 +243,48 @@ body.is-open .wordmark { display: none; }
 }
 .foot a:hover { color: var(--paper); }
 
+/* 등장: 워드마크가 글자 단위로, 그 뒤를 태그라인·탭·힌트가 따라온다.
+   진행은 script.js가 직접 그린다(합성기 시계에 기대지 않는다).
+   JS가 멈추면 html에 .anim이 붙지 않으므로 아래 폴백이 그냥 보여준다. */
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes reveal { to { opacity: 1; } }
+
+html.js .wordmark,
+html.js .mark,
+html.js .tagline,
+html.js .tabs a,
+html.js .hint { opacity: 0; }
+html.js .wordmark .ch { opacity: 0; }
+
+html.js:not(.anim) .wordmark,
+html.js:not(.anim) .mark,
+html.js:not(.anim) .tagline,
+html.js:not(.anim) .tabs a,
+html.js:not(.anim) .hint { animation: reveal .35s ease-out 100ms forwards; }
+html.js:not(.anim) .wordmark .ch { opacity: 1; }
+
 /* JS 없을 때: 워드마크 아래에 네 섹션을 차례로 보여준다 */
 html:not(.js) .panel { display: block; margin-top: 48px; }
 html:not(.js) .stage { align-content: start; grid-auto-rows: max-content; padding-top: 64px; }
-html:not(.js) .home-link { visibility: visible; }
 
-@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   .panel { animation: none; }
-  .tabs a { transition: none; }
+  .tabs a, .home-link, .home-text, .bg, .veil { transition: none; }
+  html.js .wordmark, html.js .wordmark .ch, html.js .mark,
+  html.js .tagline, html.js .tabs a, html.js .hint {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }
 
 @media (max-width: 600px) {
-  .top { grid-template-columns: 1fr; justify-items: center; row-gap: 10px; padding-top: 18px; }
-  .home-link { grid-column: 1; justify-self: center; display: none; }
-  body.is-open .home-link { display: block; }
+  .top { grid-template-columns: 1fr; justify-items: center; row-gap: 12px; padding-top: 18px; }
+  .home-link { grid-column: 1; justify-self: center; }
   .tabs { grid-column: 1; font-size: 14px; }
-  .wordmark { letter-spacing: 0.22em; text-indent: 0.22em; }
+  .wordmark { letter-spacing: 0.22em; text-indent: 0.11em; }
+  .tagline { font-size: 11.5px; letter-spacing: 0.12em; }
+  .hint { font-size: 10.5px; letter-spacing: 0.1em; }
   .marks li { grid-template-columns: 1fr; gap: 4px; }
   .foot { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
 }

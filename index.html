@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KYNN TECHNOLOGY</title>
-<meta name="description" content="킨테크놀로지 — 반도체(HBM) 후공정 장비에 들어가는 부품과 장비를 만드는 회사.">
+<meta name="description" content="킨테크놀로지 — 반도체 후공정 장비에 들어가는 부품과 장비를 만드는 회사.">
 <meta name="theme-color" content="#0a0a0a">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:title" content="KYNN TECHNOLOGY">
-<meta property="og:description" content="킨테크놀로지 — 반도체(HBM) 후공정 장비에 들어가는 부품과 장비를 만드는 회사.">
+<meta property="og:description" content="킨테크놀로지 — 반도체 후공정 장비에 들어가는 부품과 장비를 만드는 회사.">
 <meta property="og:url" content="https://kynntechnology.com/">
 <meta property="og:image" content="https://kynntechnology.com/assets/og-image-dark.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -21,38 +21,96 @@
 </head>
 <body>
 
+<canvas class="bg" id="wafer" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+
 <header class="top">
-  <a class="home-link" href="#" data-home aria-label="처음으로">KYNN TECHNOLOGY</a>
+  <a class="home-link" href="#" data-home aria-label="처음으로">
+    <svg class="mark" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+      <path d="M9.15 1.5 A6.6 6.6 0 1 1 6.85 1.5" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/>
+      <path d="M9.15 1.5 L8 3.0 L6.85 1.5" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="home-text">KYNN TECHNOLOGY</span>
+  </a>
   <nav class="tabs" aria-label="메뉴">
-    <a href="#about" data-tab="about">회사소개</a>
-    <a href="#work" data-tab="work">하는 일</a>
-    <a href="#careers" data-tab="careers">채용</a>
-    <a href="#contact" data-tab="contact">문의</a>
+    <a href="#about" data-tab="about" style="--i:0">회사소개</a>
+    <a href="#work" data-tab="work" style="--i:1">하는 일</a>
+    <a href="#careers" data-tab="careers" style="--i:2">채용</a>
+    <a href="#contact" data-tab="contact" style="--i:3">문의</a>
   </nav>
 </header>
 
 <main class="stage">
 
-  <h1 class="wordmark" id="top">KYNN TECHNOLOGY</h1>
+  <div class="hero">
+    <h1 class="wordmark" id="top">KYNN TECHNOLOGY</h1>
+    <p class="tagline">반도체 후공정 장비 부품·장비 제조</p>
+  </div>
 
   <section class="panel" id="about" aria-labelledby="about-title" hidden>
     <p class="kicker" id="about-title">회사소개</p>
-    <p class="lead">킨테크놀로지는 반도체(HBM) 후공정 장비에 들어가는 부품과 장비를 만드는 회사입니다.</p>
+    <p class="lead">킨테크놀로지는 반도체 후공정 장비에 들어가는 부품과 장비를 만드는 회사입니다.</p>
     <p>kynn은 고대 영어 cynn(kin)에서 왔습니다. '한 무리'라는 뜻이고, 여기서 kin(혈족)과 kind(친절함)가 갈라져 나왔습니다. 저희는 뜻으로 모인 혈족 같은 팀을 만들고 싶습니다.</p>
-    <p>지금은 작은 회사입니다. 제조로 현금흐름을 만들고, 취급 품목과 동료를 늘리고, 쌓인 이익으로 신사업과 R&amp;D에 투자하며 성장합니다. 외부 자금을 끌어오지 않고 번 만큼만 씁니다.</p>
+    <p>정확함과 성실함, 그리고 기록. 거래처와 오래 가는 방법은 그것뿐이라고 믿습니다. 도면대로 만들고, 약속한 날짜에, 검사를 거쳐 보냅니다.</p>
     <p class="sign">대표 이재현</p>
     <a class="back" href="#" data-home>처음으로</a>
   </section>
 
-  <section class="panel" id="work" aria-labelledby="work-title" hidden>
+  <section class="panel panel-work" id="work" aria-labelledby="work-title" hidden>
     <p class="kicker" id="work-title">하는 일</p>
-    <p class="lead">반도체 장비 제조사의 협력사로서, 거래처의 도면과 사양대로 만들고 거래처의 검사 기준으로 검사해 납품합니다.</p>
-    <ul class="marks">
-      <li><strong>작업 표준서</strong><span>작업은 표준서대로 합니다. 더 나은 방법을 찾으면 표준서를 고칩니다.</span></li>
-      <li><strong>검사 기준서</strong><span>검사는 만든 사람이 아닌 사람이 기준서대로 하고, 성적서를 남깁니다.</span></li>
-      <li><strong>작업일지</strong><span>매일 생산 수량, 불량, 특이사항을 기록합니다. 기록된 문제는 개선의 재료입니다.</span></li>
-      <li><strong>납기</strong><span>약속한 납기는 지킵니다. 못 지킬 것 같으면 먼저 알립니다.</span></li>
+    <p class="lead">반도체 후공정 장비에 들어가는 부품과 장비를 만듭니다.</p>
+
+    <ul class="figs">
+      <li>
+        <svg viewBox="0 0 200 200" role="img" aria-label="다이가 배열된 실리콘 웨이퍼">
+          <defs>
+            <pattern id="fw-dies" width="17" height="13" patternUnits="userSpaceOnUse" patternTransform="translate(100 100)">
+              <rect x="0.6" y="0.6" width="15.2" height="11.2" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.55"/>
+            </pattern>
+            <clipPath id="fw-clip"><circle cx="100" cy="100" r="82"/></clipPath>
+          </defs>
+          <g clip-path="url(#fw-clip)"><rect width="200" height="200" fill="url(#fw-dies)"/></g>
+          <path d="M106.14 18.23 A82 82 0 1 1 93.86 18.23" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M106.14 18.23 L100 29.5 L93.86 18.23" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        <span>웨이퍼</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 200 200" role="img" aria-label="치수가 표기된 정밀 가공 부품 도면">
+          <g fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="34" y="52" width="132" height="96" rx="5"/>
+            <circle cx="100" cy="100" r="29"/>
+            <circle cx="100" cy="100" r="21" stroke-dasharray="5 4" opacity="0.6"/>
+            <circle cx="52" cy="70" r="5"/><circle cx="148" cy="70" r="5"/>
+            <circle cx="52" cy="130" r="5"/><circle cx="148" cy="130" r="5"/>
+            <path d="M70 148 L70 158 M130 148 L130 158" opacity="0.6"/>
+          </g>
+          <g stroke="currentColor" stroke-width="1" opacity="0.55">
+            <path d="M34 172 L166 172 M34 167 L34 177 M166 167 L166 177"/>
+          </g>
+          <text x="100" y="188" text-anchor="middle" font-size="13" fill="currentColor" opacity="0.65">±0.01</text>
+        </svg>
+        <span>장비 부품</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 200 200" role="img" aria-label="공정 챔버가 이송 챔버를 둘러싼 후공정 장비">
+          <g fill="none" stroke="currentColor" stroke-width="1.4">
+            <circle cx="100" cy="90" r="27"/>
+            <circle cx="100" cy="34" r="17"/>
+            <circle cx="53" cy="63" r="17"/>
+            <circle cx="147" cy="63" r="17"/>
+            <path d="M100 63 L100 51 M76.6 76.6 L67.7 71.5 M123.4 76.6 L132.3 71.5 M100 117 L100 146"/>
+            <rect x="64" y="146" width="72" height="24" rx="3"/>
+            <circle cx="82" cy="158" r="6"/>
+            <circle cx="118" cy="158" r="6"/>
+          </g>
+          <circle cx="100" cy="90" r="13" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>후공정 장비</span>
+      </li>
     </ul>
+
+    <p>거래처의 도면과 사양을 기준으로 제작하고, 검사 기준서대로 검사해 성적서를 남긴 뒤 출하합니다.</p>
     <a class="back" href="#" data-home>처음으로</a>
   </section>
 
@@ -73,6 +131,8 @@
     <p class="email"><a href="mailto:kynn@kynntechnology.com">kynn@kynntechnology.com</a></p>
     <a class="back" href="#" data-home>처음으로</a>
   </section>
+
+  <p class="hint" aria-hidden="true">위 메뉴에서 자세히 보실 수 있습니다</p>
 
 </main>
 
