@@ -16,3 +16,17 @@ git add -A
 git commit -m "문구 수정"
 git push
 ```
+
+## 채용공고 링크 다시 여는 법
+
+채용 탭의 「채용공고 준비 중」은 누를 수 없는 표시일 뿐입니다. 공고를 열 때 `index.html`의 아래 한 줄을
+
+```html
+<span class="btn btn-soon">채용공고 준비 중</span>
+```
+
+이렇게 바꾸면 됩니다.
+
+```html
+<a class="btn" href="https://www.notion.so/3cbe5de80e7481e196cfdd1f21776393" target="_blank" rel="noopener" aria-label="채용공고 보기 (새 창에서 열림)">채용공고 보기</a>
+```

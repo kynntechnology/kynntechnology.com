@@ -234,6 +234,9 @@ html:not(.js) .hint { display: none; }
 }
 .btn:hover { background: #fff; }
 .btn-ghost { background: transparent; color: var(--paper); }
+/* 아직 열지 않은 링크 자리 — 누를 수 없다는 것이 보이게 둔다.
+   공고를 열 때는 이 span을 채용공고 주소를 가진 <a class="btn">로 바꾸면 된다. */
+.btn-soon { background: transparent; color: var(--mute); border: 1px dashed var(--line); border-color: #444; cursor: default; user-select: none; }
 .btn-ghost:hover { background: rgba(255,255,255,0.08); }
 .email { margin: 20px 0 24px; }
 .email a {
