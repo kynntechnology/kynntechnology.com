@@ -194,7 +194,7 @@ html:not(.js) .hint { display: none; }
 .panel p { margin: 0 0 16px; }
 .sign { color: var(--mute); }
 
-/* 하는 일 — 웨이퍼·부품·장비 도해 (폭은 다른 패널과 같은 640px) */
+/* 하는 일 — 케이블·모듈·장비 도해 (폭은 다른 패널과 같은 640px) */
 .figs {
   list-style: none;
   display: grid;
